@@ -1,8 +1,10 @@
 package api
 
 import (
+	"context"
 	"github.com/caiorcferreira/swapi/internals/swapi/services"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 type PlanetHandlers struct {
@@ -10,9 +12,10 @@ type PlanetHandlers struct {
 }
 
 func (p PlanetHandlers) GetAllPlanets(c *gin.Context) {
-	planets, err := p.planetService.GetAll()
+	ctx, _ := context.WithTimeout(c, 1000*time.Millisecond)
+	planets, err := p.planetService.GetAll(ctx)
 	if err != nil {
-		c.JSON(500, nil)
+		c.JSON(500, gin.H{})
 		return
 	}
 

@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	. "github.com/caiorcferreira/swapi/internals/swapi"
 	"github.com/caiorcferreira/swapi/internals/swapi/infra"
 )
@@ -10,8 +11,8 @@ type PlanetService struct {
 }
 
 
-func (s PlanetService) GetAll() ([]Planet, error) {
-	planets, err := s.planetRepo.GetAll()
+func (s PlanetService) GetAll(ctx context.Context) ([]Planet, error) {
+	planets, err := s.planetRepo.GetAll(ctx)
 	if err != nil {
 		return nil, err
 	}

@@ -5,24 +5,26 @@ import (
 	. "github.com/caiorcferreira/swapi/internals/swapi"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"time"
 )
 
 type PlanetRepository struct {
 	db *MongoDb
 }
 
-func (r PlanetRepository) GetAll() ([]Planet, error) {
-	c := r.db.Collection("planets")
+func (r PlanetRepository) GetAll(ctx context.Context) ([]Planet, error) {
+	collection := r.db.Collection("planets")
+	timeout, _ := context.WithTimeout(ctx, 20*time.Millisecond)
 
-	cursor, err := c.Find(context.TODO(), bson.D{}, options.Find())
-	defer cursor.Close(context.TODO())
+	cursor, err := collection.Find(timeout, bson.D{}, options.Find())
 	if err != nil {
 		return nil, err
 	}
+	defer cursor.Close(ctx)
 
 	var results []Planet
 
-	for cursor.Next(context.TODO()) {
+	for cursor.Next(ctx) {
 		var item Planet
 		if err := cursor.Decode(&item); err != nil {
 			return nil, err
