@@ -16,6 +16,7 @@ func SetupRoutes() http.Handler {
 	planets := router.Group("/planets")
 	{
 		planets.GET("/", planetHandlers.GetAllPlanets)
+		planets.POST("/", planetHandlers.PostPlanet)
 	}
 
 	return router
