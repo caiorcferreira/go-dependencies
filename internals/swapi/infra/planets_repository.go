@@ -18,17 +18,21 @@ type planetDescription struct {
 	Climate string `bson:"climate"`
 	Terrain string `bson:"terrain"`
 	Population string `bson:"population"`
-	//Films int `bson:"films,omitempty"`
+	Films int `bson:"films,omitempty"`
 }
 
 type planetDto struct {
 	Id primitive.ObjectID `bson:"_id"`
-	planetDescription
+	Name string `bson:"name"`
+	Climate string `bson:"climate"`
+	Terrain string `bson:"terrain"`
+	Population string `bson:"population"`
+	Films int `bson:"films,omitempty"`
 }
 
 func (r PlanetRepository) GetAll(ctx context.Context) ([]Planet, error) {
 	collection := r.db.Collection("planets")
-	timeout, _ := context.WithTimeout(ctx, 50*time.Millisecond)
+	timeout, _ := context.WithTimeout(ctx, 100*time.Millisecond)
 
 	cursor, err := collection.Find(timeout, bson.D{}, options.Find())
 	if err != nil {
@@ -50,7 +54,7 @@ func (r PlanetRepository) GetAll(ctx context.Context) ([]Planet, error) {
 			Terrain:    dto.Terrain,
 			Climate:    dto.Climate,
 			Population: dto.Population,
-			//Films: dto.Films,
+			Films: dto.Films,
 		}
 
 		results = append(results, p)
@@ -65,15 +69,16 @@ func (r PlanetRepository) GetAll(ctx context.Context) ([]Planet, error) {
 
 func (r PlanetRepository) Save(ctx context.Context, planet Planet) (Planet, error) {
 	collection := r.db.Collection("planets")
-	timeout, _ := context.WithTimeout(ctx, 80*time.Millisecond)
+	timeout, _ := context.WithTimeout(ctx, 250*time.Millisecond)
 
 	newPlanet := planetDescription{
 		Name:       planet.Name,
 		Population: planet.Population,
 		Climate:    planet.Climate,
 		Terrain:    planet.Terrain,
+		Films: planet.Films,
 	}
-	
+
 	result, err := collection.InsertOne(timeout, newPlanet)
 	if err != nil {
 		return Planet{}, err

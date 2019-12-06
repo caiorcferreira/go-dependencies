@@ -32,15 +32,13 @@ func (h PlanetHandlers) GetAllPlanets(c *gin.Context) {
 }
 
 func (h PlanetHandlers) PostPlanet(c *gin.Context) {
-	ctx, _ := context.WithTimeout(c, 1000*time.Millisecond)
-
 	var planet Planet
 	if err := c.ShouldBind(&planet); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{})
 		return
 	}
 
-	saved, err := h.planetService.Create(ctx, planet.Name, planet.Climate, planet.Terrain, planet.Population)
+	saved, err := h.planetService.Create(c, planet.Name, planet.Climate, planet.Terrain, planet.Population)
 	if err != nil {
 		fmt.Printf("An unexpected error occured: %v\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{})

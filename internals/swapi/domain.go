@@ -6,5 +6,6 @@ type Planet struct {
 	Climate string `json:"climate"`
 	Terrain string `json:"terrain"`
 	Population string `json:"population"`
+	Films int `json:"films,omitempty"`
 }
 
